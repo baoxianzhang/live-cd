@@ -110,7 +110,8 @@ wstool update -t src
 rosdep install -r -n -y --rosdistro $ROSDISTRO --from-paths src --ignore-src
 # compile with catkin
 . /opt/ros/$ROSDISTRO/setup.sh
-catkin build -p 1 --no-status
+SHELL="/bin/bash"
+# catkin build -p 1 --no-status
 cd -
 chown -R 999.999 /home/ubuntu/catkin_ws
 
@@ -118,7 +119,7 @@ chown -R 999.999 /home/ubuntu/catkin_ws
 apt-get -y -q nautilus-open-terminal
 
 # install freecad
-apt-get -y -q install freecad
+# apt-get -y -q install freecad
 
 # fix resolve conf (https://github.com/tork-a/live-cd/issues/8)
 rm -fr /etc/resolv.conf
@@ -128,24 +129,25 @@ dpkg-reconfigure -fnoninteractive resolvconf
 
 fi # ( [ ! ${DEBUG} ] )
 
-# desktop settings
-if [ ! -e /home/ubuntu/tork-ros.png ]; then
-  wget https://github.com/tork-a/live-cd/raw/master/tork-ros.png -O /home/ubuntu/tork-ros.png
-  chown -R 999.999 /home/ubuntu/tork-ros.png
-fi
-
-## dbus-launch --exit-with-session gsettings set org.gnome.desktop.background picture-uri file:///home/ubuntu/tork-ros.png
-echo "
-[org.gnome.desktop.background]
-picture-uri='file:///home/ubuntu/tork-ros.png'
-" > /usr/share/glib-2.0/schemas/99_local-desktop-background.gschema.override
-
-# setup keyboard
-# dbus-launch --exit-with-session gsettings set org.gnome.libgnomekbd.keyboard options "['ctrl\tctrl:swapcaps']"
-echo "
-[org.gnome.libgnomekbd.keyboard]
-options=['ctrl\tctrl:nocaps']
-" > /usr/share/glib-2.0/schemas/99_local-libgnomekbd-keyboard.gschema.override
+# # desktop settings
+# if [ ! -e /home/ubuntu/tork-ros.png ]; then
+#   wget https://github.com/tork-a/live-cd/raw/master/tork-ros.png -O /home/ubuntu/tork-ros.png
+#   chown -R 999.999 /home/ubuntu/tork-ros.png
+# fi
+#
+# ## dbus-launch --exit-with-session gsettings set org.gnome.desktop.background picture-uri file:///home/ubuntu/tork-ros.png
+# echo "
+# [org.gnome.desktop.background]
+# picture-uri='file:///home/ubuntu/tork-ros.png'
+# " > /usr/share/glib-2.0/schemas/99_local-desktop-background.gschema.override
+#
+# # setup keyboard
+# # dbus-launch --exit-with-session gsettings set org.gnome.libgnomekbd.keyboard options "['ctrl\tctrl:swapcaps']"
+# echo "
+# [org.gnome.libgnomekbd.keyboard]
+# options=['ctrl\tctrl:nocaps']
+# " > /usr/share/glib-2.0/schemas/99_local-libgnomekbd-keyboard.gschema.override
+#
 
 # add gnome-terminal icon
 dbus-launch --exit-with-session gsettings set com.canonical.Unity.Launcher favorites "\$(gsettings get com.canonical.Unity.Launcher favorites | sed "s/, *'gnome-terminal.desktop' *//g" | sed "s/'gnome-terminal.desktop' *, *//g" | sed -e "s/]$/, 'gnome-terminal.desktop']/")"
