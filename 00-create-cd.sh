@@ -84,7 +84,7 @@ apt-get -y -q install ros-$ROSDISTRO-desktop-full ros-$ROSDISTRO-catkin  ros-$RO
 apt-get -y -q install python-wstool python-rosdep python-catkin-tools
 
 # rosdep
-rosdep init; rosdep update || echo "ok"
+rosdep init;  rosdep update || echo "ok"
 
 # make home directory
 mkdir -p /home/ubuntu/
@@ -116,16 +116,16 @@ cd -
 chown -R 999.999 /home/ubuntu/catkin_ws
 
 # install nautilus-open-terminal
-apt-get -y -q nautilus-open-terminal
+# apt-get -q nautilus-open-terminal
 
 # install freecad
 # apt-get -y -q install freecad
 
-# fix resolve conf (https://github.com/tork-a/live-cd/issues/8)
-rm -fr /etc/resolv.conf
-apt-get -y -q install debconf-utils
-echo "resolvconf resolvconf/linkify-resolvconf boolean true" | debconf-set-selections -
-dpkg-reconfigure -fnoninteractive resolvconf
+# # fix resolve conf (https://github.com/tork-a/live-cd/issues/8)
+# rm -fr /etc/resolv.conf
+# apt-get -y -q install debconf-utils
+# echo "resolvconf resolvconf/linkify-resolvconf boolean true" | debconf-set-selections -
+# dpkg-reconfigure -fnoninteractive resolvconf
 
 fi # ( [ ! ${DEBUG} ] )
 
@@ -198,7 +198,7 @@ if [ ! ${DEBUG} ]; then
                                               #1234 56789012345 678901 2 3 456789012
     sudo uck-remaster-pack-iso $FILENAME -g -d=BAO\ Ubuntu/ROS\ Linux\ \(${DATE}\)
     sudo cp -f ~/tmp/remaster-new-files/$FILENAME .
-    sudo chown jenkins.jenkins $FILENAME
+    sudo chown zhangbaoxian.zhangbaoxian $FILENAME
 fi
 
 
