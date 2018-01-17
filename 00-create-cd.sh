@@ -75,51 +75,18 @@ cat /etc/apt/sources.list
 
 # install ros
 sh -c 'echo "deb http://packages.ros.org/ros/ubuntu \`lsb_release -cs\` main" > /etc/apt/sources.list.d/ros-latest.list'
-# apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116
-apt-key adv --keyserver hkp://pgp.mit.edu:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116
+apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116
+# apt-key adv --keyserver hkp://pgp.mit.edu:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116
 # apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116
 apt-get update
 echo "hddtemp hddtemp/daemon boolean false" | sudo debconf-set-selections
 apt-get -y -q install ros-$ROSDISTRO-desktop-full ros-$ROSDISTRO-catkin  ros-$ROSDISTRO-rosbash
 apt-get -y -q install python-wstool python-rosdep python-catkin-tools
+apt-get -y -q install vim
 
 # rosdep
 rosdep init;  rosdep update || echo "ok"
 
-# make home directory
-mkdir -p /home/ubuntu/
-chown -R 999.999 /home/ubuntu/
-cp /etc/skel/.??* /home/ubuntu
-chown -R 999.999 /home/ubuntu/.??*
-echo "
-# ROS setup
-source /opt/ros/$ROSDISTRO/setup.bash
-
-# This file is created on ${DATE}
-" >> /home/ubuntu/.bashrc
-HOME=/home/ubuntu rosdep update
-chown -R 999.999 /home/ubuntu/.ros
-
-# make catkin workspace
-mkdir -p /home/ubuntu/catkin_ws/src
-cd /home/ubuntu/catkin_ws
-wstool init src || echo "already initilized"
-
-# update and install
-wstool update -t src
-rosdep install -r -n -y --rosdistro $ROSDISTRO --from-paths src --ignore-src
-# compile with catkin
-. /opt/ros/$ROSDISTRO/setup.sh
-SHELL="/bin/bash"
-# catkin build -p 1 --no-status
-cd -
-chown -R 999.999 /home/ubuntu/catkin_ws
-
-# install nautilus-open-terminal
-# apt-get -q nautilus-open-terminal
-
-# install freecad
-# apt-get -y -q install freecad
 
 # # fix resolve conf (https://github.com/tork-a/live-cd/issues/8)
 # rm -fr /etc/resolv.conf
@@ -128,45 +95,6 @@ chown -R 999.999 /home/ubuntu/catkin_ws
 # dpkg-reconfigure -fnoninteractive resolvconf
 
 fi # ( [ ! ${DEBUG} ] )
-
-# # desktop settings
-# if [ ! -e /home/ubuntu/tork-ros.png ]; then
-#   wget https://github.com/tork-a/live-cd/raw/master/tork-ros.png -O /home/ubuntu/tork-ros.png
-#   chown -R 999.999 /home/ubuntu/tork-ros.png
-# fi
-#
-# ## dbus-launch --exit-with-session gsettings set org.gnome.desktop.background picture-uri file:///home/ubuntu/tork-ros.png
-# echo "
-# [org.gnome.desktop.background]
-# picture-uri='file:///home/ubuntu/tork-ros.png'
-# " > /usr/share/glib-2.0/schemas/99_local-desktop-background.gschema.override
-#
-# # setup keyboard
-# # dbus-launch --exit-with-session gsettings set org.gnome.libgnomekbd.keyboard options "['ctrl\tctrl:swapcaps']"
-# echo "
-# [org.gnome.libgnomekbd.keyboard]
-# options=['ctrl\tctrl:nocaps']
-# " > /usr/share/glib-2.0/schemas/99_local-libgnomekbd-keyboard.gschema.override
-#
-
-# add gnome-terminal icon
-dbus-launch --exit-with-session gsettings set com.canonical.Unity.Launcher favorites "\$(gsettings get com.canonical.Unity.Launcher favorites | sed "s/, *'gnome-terminal.desktop' *//g" | sed "s/'gnome-terminal.desktop' *, *//g" | sed -e "s/]$/, 'gnome-terminal.desktop']/")"
-gsettings get com.canonical.Unity.Launcher favorites
-
-echo "
-[com.canonical.Unity.Launcher]
-favorites=\`gsettings get com.canonical.Unity.Launcher favorites\`
-" > /usr/share/glib-2.0/schemas/99_local-unity-launcher.gschema.override
-
-## recompile schemas file
-glib-compile-schemas /usr/share/glib-2.0/schemas/
-
-## write test code
-if [ ! -e /home/ubuntu/.live-cd-test.sh ]; then
-  echo "`cat dot-live-cd-test.sh`" >> /home/ubuntu/.live-cd-test.sh
-  chown -R 999.999 /home/ubuntu/.live-cd-test.sh
-  chmod a+x /home/ubuntu/.live-cd-test.sh
-fi
 
 EOF
 
