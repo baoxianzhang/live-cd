@@ -56,6 +56,9 @@ set -e
 
 umask 022
 
+# first install boot-repair repository
+sudo add-apt-repository ppa:yannubuntu/boot-repair
+
 if [ ! ${DEBUG} ]; then
 whoami
 if [ \`grep universe /etc/apt/sources.list | wc -l\` -eq 0 ]; then
@@ -82,7 +85,10 @@ apt-get update
 echo "hddtemp hddtemp/daemon boolean false" | sudo debconf-set-selections
 apt-get -y -q install ros-$ROSDISTRO-desktop-full ros-$ROSDISTRO-catkin  ros-$ROSDISTRO-rosbash
 apt-get -y -q install python-wstool python-rosdep python-catkin-tools
+
+# vim and boot-repair
 apt-get -y -q install vim
+apt-get -y -q boot-repair
 
 # rosdep
 rosdep init;  rosdep update || echo "ok"
